@@ -42,9 +42,20 @@ final class CoreDataService {
     }
     
     func fetch<T: NSManagedObject>(_ type: T.Type, predicate: NSPredicate?) -> [T] {
+        var list = [T]()
+
         let fetchRequest = NSFetchRequest<T>(entityName: "Task")
         fetchRequest.predicate = predicate
-        return (try? context.fetch(fetchRequest)) ?? []
+        let result = try? context.fetch(fetchRequest)
+        
+        for tasks in result as! [Task] {
+            //FIXME: - Not showing task without subtasks
+            if let task = tasks.task {
+                list.append(task as! T)
+            }
+        }
+                
+        return Array(Set(list))
     }
     
     func delete(_ object: NSManagedObject) {

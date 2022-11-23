@@ -21,10 +21,10 @@ final class ViewController: UIViewController {
     }
     
     @IBAction private func new() {
-        showAlert()
+        showAlertNewTask()
     }
 
-    private func showAlert(for list: Task? = nil) {
+    private func showAlertNewTask(for list: Task? = nil) {
         let createListAlert = UIAlertController(title: "New!", message: "Write list title", preferredStyle: .alert)
         createListAlert.addTextField()
         createListAlert.textFields?.first?.text = list?.title
@@ -43,6 +43,22 @@ final class ViewController: UIViewController {
         })
         
         show(createListAlert, sender: nil)
+    }
+    
+    private func showAlertEditNote(for list: Task? = nil) {
+        let editNoteAlert = UIAlertController(title: "Edit note!", message: "Write note text", preferredStyle: .alert)
+        editNoteAlert.addTextField()
+        editNoteAlert.textFields?.first?.text = list?.note
+        
+        editNoteAlert.addAction(.init(title: "Save", style: .default) { [weak self] _ in
+            if let note = editNoteAlert.textFields?.first?.text {
+                CoreDataService.shared.write {
+                    list?.note = note
+                }
+            }
+        })
+        
+        show(editNoteAlert, sender: nil)
     }
     
     private func saveNewList(with name: String) {
@@ -87,7 +103,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        showAlert(for: tasksList[indexPath.row])
+        showAlertEditNote(for: tasksList[indexPath.row])
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
