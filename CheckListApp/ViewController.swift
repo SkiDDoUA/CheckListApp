@@ -9,23 +9,22 @@ import UIKit
 import CoreData
 
 final class ViewController: UIViewController {
-
-
-//    @Fetch<List> var list
-    
-    var list: [List] = []
+    var tasksList: [Task] = []
     
     @IBOutlet private weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        var predicate: NSPredicate?
+        tasksList = CoreDataService.shared.fetch(Task.self, predicate: predicate)
     }
     
     @IBAction private func new() {
         showAlert()
     }
 
-    private func showAlert(for list: List? = nil) {
+    private func showAlert(for list: Task? = nil) {
         let createListAlert = UIAlertController(title: "New!", message: "Write list title", preferredStyle: .alert)
         createListAlert.addTextField()
         createListAlert.textFields?.first?.text = list?.title
@@ -48,17 +47,17 @@ final class ViewController: UIViewController {
     
     private func saveNewList(with name: String) {
         CoreDataService.shared.write {
-            let object = CoreDataService.shared.create(List.self) { object in
+            let object = CoreDataService.shared.create(Task.self) { object in
                 object.title = name
                 object.dateOfCreation = .init()
             }
             
-            list.append(object)
+            tasksList.append(object)
         }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        (segue.destination as? ItemsViewController)?.list = sender as? List
+        (segue.destination as? ItemsViewController)?.task = sender as? Task
     }
 
 }
@@ -66,12 +65,12 @@ final class ViewController: UIViewController {
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return list.count
+        return tasksList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "id")
-        cell.textLabel?.text = list[indexPath.row].title
+        cell.textLabel?.text = tasksList[indexPath.row].title
         cell.accessoryType = .detailDisclosureButton
         
         return cell
@@ -79,7 +78,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let objectToRemove = list.remove(at: indexPath.row)
+            let objectToRemove = tasksList.remove(at: indexPath.row)
             CoreDataService.shared.write {
                 CoreDataService.shared.delete(objectToRemove)
             }
@@ -88,11 +87,11 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        showAlert(for: list[indexPath.row])
+        showAlert(for: tasksList[indexPath.row])
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "openList", sender: list[indexPath.row])
+        performSegue(withIdentifier: "openList", sender: tasksList[indexPath.row])
     }
     
 }

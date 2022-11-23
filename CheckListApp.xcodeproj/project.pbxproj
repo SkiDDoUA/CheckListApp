@@ -14,8 +14,8 @@
 		3AB2AD6B292E303100AA16C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3AB2AD6A292E303100AA16C0 /* Assets.xcassets */; };
 		3AB2AD6E292E303100AA16C0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AB2AD6C292E303100AA16C0 /* LaunchScreen.storyboard */; };
 		3AB2AD76292E306500AA16C0 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2AD75292E306500AA16C0 /* CoreDataService.swift */; };
-		3AB2AD79292E30A000AA16C0 /* ChecklistModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2AD77292E308F00AA16C0 /* ChecklistModel.xcdatamodeld */; };
 		3AB2AD7B292E30BB00AA16C0 /* SubTasksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2AD7A292E30BB00AA16C0 /* SubTasksViewController.swift */; };
+		3AB2AD88292E678B00AA16C0 /* CheckListAppModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2AD86292E678B00AA16C0 /* CheckListAppModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,8 +28,8 @@
 		3AB2AD6D292E303100AA16C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3AB2AD6F292E303100AA16C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3AB2AD75292E306500AA16C0 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
-		3AB2AD78292E308F00AA16C0 /* ChecklistModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChecklistModel.xcdatamodel; sourceTree = "<group>"; };
 		3AB2AD7A292E30BB00AA16C0 /* SubTasksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubTasksViewController.swift; sourceTree = "<group>"; };
+		3AB2AD87292E678B00AA16C0 /* CheckListAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CheckListAppModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,8 +70,8 @@
 				3AB2AD6C292E303100AA16C0 /* LaunchScreen.storyboard */,
 				3AB2AD6F292E303100AA16C0 /* Info.plist */,
 				3AB2AD75292E306500AA16C0 /* CoreDataService.swift */,
-				3AB2AD77292E308F00AA16C0 /* ChecklistModel.xcdatamodeld */,
 				3AB2AD7A292E30BB00AA16C0 /* SubTasksViewController.swift */,
+				3AB2AD86292E678B00AA16C0 /* CheckListAppModel.xcdatamodeld */,
 			);
 			path = CheckListApp;
 			sourceTree = "<group>";
@@ -147,7 +147,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AB2AD79292E30A000AA16C0 /* ChecklistModel.xcdatamodeld in Sources */,
+				3AB2AD88292E678B00AA16C0 /* CheckListAppModel.xcdatamodeld in Sources */,
 				3AB2AD7B292E30BB00AA16C0 /* SubTasksViewController.swift in Sources */,
 				3AB2AD76292E306500AA16C0 /* CoreDataService.swift in Sources */,
 				3AB2AD66292E302E00AA16C0 /* ViewController.swift in Sources */,
@@ -372,13 +372,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		3AB2AD77292E308F00AA16C0 /* ChecklistModel.xcdatamodeld */ = {
+		3AB2AD86292E678B00AA16C0 /* CheckListAppModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				3AB2AD78292E308F00AA16C0 /* ChecklistModel.xcdatamodel */,
+				3AB2AD87292E678B00AA16C0 /* CheckListAppModel.xcdatamodel */,
 			);
-			currentVersion = 3AB2AD78292E308F00AA16C0 /* ChecklistModel.xcdatamodel */;
-			path = ChecklistModel.xcdatamodeld;
+			currentVersion = 3AB2AD87292E678B00AA16C0 /* CheckListAppModel.xcdatamodel */;
+			path = CheckListAppModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

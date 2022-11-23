@@ -11,7 +11,7 @@ import CoreData
 final class CoreDataService {
     
     lazy private var container: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "ChecklistModel")
+        let container = NSPersistentContainer(name: "CheckListAppModel")
         container.loadPersistentStores { _, error in
             //Handle error
         }
@@ -42,7 +42,7 @@ final class CoreDataService {
     }
     
     func fetch<T: NSManagedObject>(_ type: T.Type, predicate: NSPredicate?) -> [T] {
-        let fetchRequest = NSFetchRequest<T>(entityName: "Item")
+        let fetchRequest = NSFetchRequest<T>(entityName: "Task")
         fetchRequest.predicate = predicate
         return (try? context.fetch(fetchRequest)) ?? []
     }

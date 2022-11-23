@@ -8,15 +8,15 @@
 import UIKit
 
 final class ItemsViewController: UIViewController {
-    weak var list: List?
+    weak var task: Task?
     
     @IBOutlet weak var tableView: UITableView!
-    
-    var items: [Item] {
-        (list?.items?.allObjects as? [Item])?.sorted {$0.dateOfCreation! < $1.dateOfCreation! } ?? []
+        
+    var tasksList: [Task] {
+        (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation! } ?? []
     }
     
-    private func showAlert(for list: List? = nil) {
+    private func showAlert(for list: Task? = nil) {
         let createListAlert = UIAlertController(title: "New!", message: "Add item to \(list?.title ?? "list")", preferredStyle: .alert)
         createListAlert.addTextField()
         createListAlert.textFields?.first?.text = list?.title
@@ -39,10 +39,11 @@ final class ItemsViewController: UIViewController {
     
     private func saveNewItem(with name: String) {
         CoreDataService.shared.write {
-            let object = CoreDataService.shared.create(Item.self) { object in
+            let object = CoreDataService.shared.create(Task.self) { object in
                 object.title = name
                 object.dateOfCreation = .init()
-                object.list = self.list
+                object.task = self.task
+//                object.subtasks?.addingObjects(from: self.task)
             }
         }
     }
@@ -55,13 +56,13 @@ final class ItemsViewController: UIViewController {
 extension ItemsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        items.count
+        tasksList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "id")
         
-        cell.textLabel?.text = items[indexPath.row].title
+        cell.textLabel?.text = tasksList[indexPath.row].title
         cell.accessoryType = .detailDisclosureButton
         
         return cell
