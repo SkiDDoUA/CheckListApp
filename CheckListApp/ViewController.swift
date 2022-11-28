@@ -12,10 +12,13 @@ final class ViewController: UIViewController {
     var tasksList: [Task] = []
     
     @IBOutlet private weak var tableView: UITableView!
+    var selectedRows = [IndexPath]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.dataSource = self
+                
         var predicate: NSPredicate?
         tasksList = CoreDataService.shared.fetch(Task.self, predicate: predicate)
     }
@@ -42,7 +45,7 @@ final class ViewController: UIViewController {
             }
         })
         
-        show(createListAlert, sender: nil)
+        present(createListAlert, animated: true, completion: nil)
     }
     
     private func showAlertEditNote(for list: Task? = nil) {
@@ -58,7 +61,7 @@ final class ViewController: UIViewController {
             }
         })
         
-        show(editNoteAlert, sender: nil)
+        present(editNoteAlert, animated: true, completion: nil)
     }
     
     private func saveNewList(with name: String) {
@@ -85,11 +88,38 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "id")
-        cell.textLabel?.text = tasksList[indexPath.row].title
-        cell.accessoryType = .detailDisclosureButton
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath)
+        if let cell = cell as? TaskTableViewCell {
+            cell.taskLabel?.text = tasksList[indexPath.row].title
+        }
+        
+        if let buttonTapped = cell.contentView.viewWithTag(1) as? UIButton {
+            buttonTapped.addTarget(self, action: #selector(checkboxTapped(_ :)), for: .touchUpInside)
+            
+            if tasksList[indexPath.row].done == true {
+                buttonTapped.isSelected = true
+            } else {
+                buttonTapped.isSelected = false
+            }
+        }
         
         return cell
+    }
+    
+    @objc func checkboxTapped(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        
+        let point = sender.convert(CGPoint.zero, to: tableView)
+        let tableIndexPath = tableView.indexPathForRow(at: point)
+        let task = tasksList[tableIndexPath!.row]
+        
+        if task.done == true {
+            task.done = false
+        } else {
+            task.done = true
+        }
+        
+        tableView.reloadRows(at: [tableIndexPath!], with: .automatic)
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -108,8 +138,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "openList", sender: tasksList[indexPath.row])
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
 }
-
-

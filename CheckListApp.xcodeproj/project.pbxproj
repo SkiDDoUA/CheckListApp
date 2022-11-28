@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A4CDC172930CD8E00FB73B4 /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4CDC162930CD8E00FB73B4 /* TaskTableViewCell.swift */; };
 		3AB2AD62292E302E00AA16C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2AD61292E302E00AA16C0 /* AppDelegate.swift */; };
 		3AB2AD64292E302E00AA16C0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2AD63292E302E00AA16C0 /* SceneDelegate.swift */; };
 		3AB2AD66292E302E00AA16C0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2AD65292E302E00AA16C0 /* ViewController.swift */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A4CDC162930CD8E00FB73B4 /* TaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		3AB2AD5E292E302E00AA16C0 /* CheckListApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheckListApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AB2AD61292E302E00AA16C0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3AB2AD63292E302E00AA16C0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 				3AB2AD75292E306500AA16C0 /* CoreDataService.swift */,
 				3AB2AD7A292E30BB00AA16C0 /* SubTasksViewController.swift */,
 				3AB2AD86292E678B00AA16C0 /* CheckListAppModel.xcdatamodeld */,
+				3A4CDC162930CD8E00FB73B4 /* TaskTableViewCell.swift */,
 			);
 			path = CheckListApp;
 			sourceTree = "<group>";
@@ -147,6 +150,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A4CDC172930CD8E00FB73B4 /* TaskTableViewCell.swift in Sources */,
 				3AB2AD88292E678B00AA16C0 /* CheckListAppModel.xcdatamodeld in Sources */,
 				3AB2AD7B292E30BB00AA16C0 /* SubTasksViewController.swift in Sources */,
 				3AB2AD76292E306500AA16C0 /* CoreDataService.swift in Sources */,
