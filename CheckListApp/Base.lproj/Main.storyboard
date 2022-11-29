@@ -45,7 +45,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="qoh-2M-Tc3">
-                                                    <rect key="frame" x="15" y="12" width="300.66666666666669" height="20"/>
+                                                    <rect key="frame" x="15" y="12" width="300.66666666666663" height="20"/>
                                                     <subviews>
                                                         <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="12t-He-nOt">
                                                             <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
@@ -59,7 +59,7 @@
                                                             </buttonConfiguration>
                                                         </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XWa-fj-6dw">
-                                                            <rect key="frame" x="35" y="0.0" width="265.66666666666669" height="20"/>
+                                                            <rect key="frame" x="35" y="0.0" width="265.66666666666663" height="20"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -76,6 +76,7 @@
                                         <connections>
                                             <outlet property="doneButton" destination="12t-He-nOt" id="02G-ik-hzi"/>
                                             <outlet property="taskLabel" destination="XWa-fj-6dw" id="xGh-J6-Qr6"/>
+                                            <segue destination="xUb-q7-qCO" kind="show" identifier="openList" id="qul-Rx-s5m"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -118,7 +119,6 @@
                     <navigationItem key="navigationItem" id="V0b-Bg-tNS"/>
                     <connections>
                         <outlet property="tableView" destination="F64-WI-qSX" id="Rwd-eo-P4h"/>
-                        <segue destination="DL1-zX-W1f" kind="show" identifier="openList" id="zrL-o4-tEt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YLB-Ie-WPI" sceneMemberID="firstResponder"/>
@@ -134,8 +134,51 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="wE1-lM-0QR">
-                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="detailDisclosureButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TaskCell" id="AFN-aR-18P" customClass="TaskTableViewCell" customModule="CheckListApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AFN-aR-18P" id="IrZ-tX-fwv">
+                                            <rect key="frame" x="0.0" y="0.0" width="330.66666666666669" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="mxD-b0-0Es">
+                                                    <rect key="frame" x="15" y="12" width="300.66666666666669" height="20"/>
+                                                    <subviews>
+                                                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IGD-p0-gRm">
+                                                            <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="20" id="4nh-qv-fWv"/>
+                                                                <constraint firstAttribute="height" constant="20" id="8rA-RA-7uT"/>
+                                                            </constraints>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="plain">
+                                                                <imageReference key="image" image="circle" catalog="system" variableValue="0.80000000000000004"/>
+                                                            </buttonConfiguration>
+                                                        </button>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dkJ-CG-IZ7">
+                                                            <rect key="frame" x="35" y="0.0" width="265.66666666666669" height="20"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="mxD-b0-0Es" firstAttribute="leading" secondItem="IrZ-tX-fwv" secondAttribute="leading" constant="15" id="Onh-6D-1O9"/>
+                                                <constraint firstItem="mxD-b0-0Es" firstAttribute="centerY" secondItem="IrZ-tX-fwv" secondAttribute="centerY" id="gvM-JZ-TKL"/>
+                                                <constraint firstAttribute="trailing" secondItem="mxD-b0-0Es" secondAttribute="trailing" constant="15" id="hNG-1B-lZD"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="doneButton" destination="IGD-p0-gRm" id="QCq-s2-o7W"/>
+                                            <outlet property="taskLabel" destination="dkJ-CG-IZ7" id="ccL-U7-dyF"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="DL1-zX-W1f" id="uXa-5D-p5y"/>
                                     <outlet property="delegate" destination="DL1-zX-W1f" id="SXZ-1e-iB8"/>

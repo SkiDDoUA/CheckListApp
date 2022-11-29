@@ -13,12 +13,11 @@ final class ItemsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
         
     var tasksList: [Task] {
-        (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation! } ?? []
+        (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation!} ?? []
     }
     
     func configure(for taskData: Task) {
         task = taskData
-        
     }
     
     private func showAlertNewTask(for list: Task? = nil) {
@@ -40,6 +39,22 @@ final class ItemsViewController: UIViewController {
         })
         
         present(createListAlert, animated: true, completion: nil)
+    }
+    
+    private func showAlertEditNote(for list: Task? = nil) {
+        let editNoteAlert = UIAlertController(title: "Edit note!", message: "Write note text", preferredStyle: .alert)
+        editNoteAlert.addTextField()
+        editNoteAlert.textFields?.first?.text = list?.note
+        
+        editNoteAlert.addAction(.init(title: "Save", style: .default) { [weak self] _ in
+            if let note = editNoteAlert.textFields?.first?.text {
+                CoreDataService.shared.write {
+                    list?.note = note
+                }
+            }
+        })
+        
+        present(editNoteAlert, animated: true, completion: nil)
     }
     
     private func saveNewItem(with name: String) {
@@ -71,13 +86,72 @@ extension ItemsViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "id")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath)
+        if let cell = cell as? TaskTableViewCell {
+            cell.taskLabel?.text = tasksList[indexPath.row].title
+        }
         
-        cell.textLabel?.text = tasksList[indexPath.row].title
-        cell.accessoryType = .detailDisclosureButton
+        if let buttonTapped = cell.contentView.viewWithTag(1) as? UIButton {
+            buttonTapped.addTarget(self, action: #selector(checkboxTapped(_ :)), for: .touchUpInside)
+            
+            if tasksList[indexPath.row].done == true {
+                buttonTapped.isSelected = true
+            } else {
+                buttonTapped.isSelected = false
+            }
+        }
         
         return cell
     }
+    
+    @objc func checkboxTapped(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        
+        let point = sender.convert(CGPoint.zero, to: tableView)
+        let tableIndexPath = tableView.indexPathForRow(at: point)
+        let task = tasksList[tableIndexPath!.row]
+        var checked = task.done
+                
+        if checked == true {
+            checked = false
+        } else {
+            checked = true
+        }
+        
+        CoreDataService.shared.write {
+            task.done = checked
+        }
+        
+        tableView.reloadRows(at: [tableIndexPath!], with: .automatic)
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let objectToRemove = tasksList[indexPath.row]
+            CoreDataService.shared.write {
+                CoreDataService.shared.delete(objectToRemove)
+            }
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        showAlertEditNote(for: tasksList[indexPath.row])
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        performSegue(withIdentifier: "openList", sender: tasksList[indexPath.row])
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = UITableViewCell(style: .default, reuseIdentifier: "id")
+//
+//        cell.textLabel?.text = tasksList[indexPath.row].title
+//        cell.accessoryType = .detailDisclosureButton
+//
+//        return cell
+//    }
     
 //    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 //        if editingStyle == .delete {
