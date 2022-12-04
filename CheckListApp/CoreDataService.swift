@@ -49,7 +49,8 @@ final class CoreDataService {
         let result = try? context.fetch(fetchRequest)
         
         for tasks in result as! [Task] {
-            //FIXME: - Not showing task without subtasks
+            //FIXME: - Not showing task with 0 subtasks
+            //FIXME: - After restart mixing tasks and subtasks of subtasks
             if let task = tasks.task {
                 list.append(task as! T)
             }
