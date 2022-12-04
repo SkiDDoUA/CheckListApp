@@ -9,19 +9,62 @@ import UIKit
 import CoreData
 
 final class ViewController: UIViewController {
-    //MARK: - Add Sorting
-    var tasksList: [Task] = []
     
     @IBOutlet private weak var tableView: UITableView!
     var selectedRows = [IndexPath]()
     
+    var currentList: [Task] = [] {
+        didSet {
+            print("currentList \(self.currentList.count)")
+//            self.tableView.reloadData()
+        }
+    }
+    var taskForSegue: Task?
+    
+    var isSubtasks = false
+    
+    weak var task: Task? {
+        didSet {
+            print("SET")
+//            print("task \(self.task.count)")
+            currentList = (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation!} ?? []
+            isSubtasks = true
+//            tableView.reloadData()
+        }
+    }
+    
+    //MARK: - Add Sorting
+    var tasksList: [Task] = [] {
+        didSet {
+//            print("tasksList \(self.tasksList.count)")
+            currentList = self.tasksList
+            isSubtasks = false
+//            tableView.reloadData()
+        }
+    }
+    
+//    var subtasksList: [Task] {
+////        get {
+////            currentList = (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation!} ?? []
+////        }
+//
+//        didSet {
+//            print("RESET")
+////            currentList = (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation!} ?? []
+////            isSubtasks = true
+////            tableView.reloadData()
+//        }
+//    }
+    
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.dataSource = self
                 
-        var predicate: NSPredicate?
-        tasksList = CoreDataService.shared.fetch(Task.self, predicate: predicate)
+        if !isSubtasks {
+            var predicate: NSPredicate?
+            tasksList = CoreDataService.shared.fetch(Task.self, predicate: predicate)
+        }
     }
     
     @IBAction private func new() {
@@ -36,13 +79,23 @@ final class ViewController: UIViewController {
         createListAlert.addAction(.init(title: "Save", style: .default) { [weak self] _ in
             if let name = createListAlert.textFields?.first?.text {
                 if list == nil {
-                    self?.saveNewList(with: name)
+                    if self!.isSubtasks {
+                        self?.saveNewSubtask(with: name)
+                    } else {
+                        self?.saveNewTask(with: name)
+                    }
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                    }
                 } else {
                     CoreDataService.shared.write {
                         list?.title = name
                     }
                 }
-                self?.tableView.reloadData()
+                print("2222")
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
             }
         })
         
@@ -65,7 +118,7 @@ final class ViewController: UIViewController {
         present(editNoteAlert, animated: true, completion: nil)
     }
     
-    private func saveNewList(with name: String) {
+    private func saveNewTask(with name: String) {
         CoreDataService.shared.write {
             let object = CoreDataService.shared.create(Task.self) { object in
                 object.title = name
@@ -76,8 +129,18 @@ final class ViewController: UIViewController {
         }
     }
     
+    private func saveNewSubtask(with name: String) {
+        CoreDataService.shared.write {
+            let object = CoreDataService.shared.create(Task.self) { object in
+                object.title = name
+                object.dateOfCreation = .init()
+                object.task = self.task
+            }
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        (segue.destination as? ItemsViewController)?.task = sender as? Task
+        (segue.destination as? ViewController)?.task = taskForSegue
     }
 
 }
@@ -85,19 +148,28 @@ final class ViewController: UIViewController {
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tasksList.count
+        print(currentList.count)
+        
+        if currentList.count == 0 {
+            tableView.setEmptyView(title: "My To Do.", message: "Add new Task.")
+        }
+        else {
+            tableView.restore()
+        }
+        
+        return currentList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath)
         if let cell = cell as? TaskTableViewCell {
-            cell.taskLabel?.text = tasksList[indexPath.row].title
+            cell.taskLabel?.text = currentList[indexPath.row].title
         }
         
         if let buttonTapped = cell.contentView.viewWithTag(1) as? UIButton {
             buttonTapped.addTarget(self, action: #selector(checkboxTapped(_ :)), for: .touchUpInside)
             
-            if tasksList[indexPath.row].done == true {
+            if currentList[indexPath.row].done == true {
                 buttonTapped.isSelected = true
             } else {
                 buttonTapped.isSelected = false
@@ -112,12 +184,19 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         let point = sender.convert(CGPoint.zero, to: tableView)
         let tableIndexPath = tableView.indexPathForRow(at: point)
-        let task = tasksList[tableIndexPath!.row]
+        let taskToCheck = currentList[tableIndexPath!.row]
         
-        if task.done == true {
-            task.done = false
+        var checked = taskToCheck.done
+        if checked == true {
+            checked = false
         } else {
-            task.done = true
+            checked = true
+        }
+        
+        if isSubtasks {
+            CoreDataService.shared.write {
+                taskToCheck.done = checked
+            }
         }
         
         tableView.reloadRows(at: [tableIndexPath!], with: .automatic)
@@ -125,21 +204,67 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let objectToRemove = tasksList.remove(at: indexPath.row)
+            var objectToRemove = currentList.remove(at: indexPath.row)
+            if isSubtasks {
+                objectToRemove = currentList[indexPath.row]
+            }
+            
             CoreDataService.shared.write {
                 CoreDataService.shared.delete(objectToRemove)
             }
+            
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
     
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        showAlertEditNote(for: tasksList[indexPath.row])
+        showAlertEditNote(for: currentList[indexPath.row])
+    }
+    
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        taskForSegue = currentList[indexPath.row]
+        return indexPath
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "openList", sender: tasksList[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+}
+
+extension UITableView {
+    func setEmptyView(title: String, message: String) {
+        let emptyView = UIView(frame: CGRect(x: self.center.x, y: self.center.y, width: self.bounds.size.width, height: self.bounds.size.height))
+        let titleLabel = UILabel()
+        
+        let messageLabel = UILabel()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.textColor = UIColor.black
+        titleLabel.font = UIFont(name: "HelveticaNeue-Bold", size: 18)
+        messageLabel.textColor = UIColor.lightGray
+        messageLabel.font = UIFont(name: "HelveticaNeue-Regular", size: 17)
+        
+        emptyView.addSubview(titleLabel)
+        emptyView.addSubview(messageLabel)
+        
+        titleLabel.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor).isActive = true
+        titleLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
+        messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
+        messageLabel.leftAnchor.constraint(equalTo: emptyView.leftAnchor, constant: 20).isActive = true
+        messageLabel.rightAnchor.constraint(equalTo: emptyView.rightAnchor, constant: -20).isActive = true
+        
+        titleLabel.text = title
+        messageLabel.text = message
+        messageLabel.numberOfLines = 0
+        messageLabel.textAlignment = .center
+
+        self.backgroundView = emptyView
+        self.separatorStyle = .none
+    }
+    
+    func restore() {
+        self.backgroundView = nil
+        self.separatorStyle = .singleLine
+    }
 }
