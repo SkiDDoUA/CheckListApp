@@ -33,7 +33,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="F64-WI-qSX">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="F64-WI-qSX">
                                 <rect key="frame" x="0.0" y="103" width="393" height="715"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
@@ -47,7 +47,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="o8s-J7-2kq">
                                                     <rect key="frame" x="15" y="20.000000000000004" width="76.333333333333329" height="60.333333333333343"/>
                                                     <subviews>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="qoh-2M-Tc3">
+                                                        <stackView opaque="NO" contentMode="left" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="qoh-2M-Tc3">
                                                             <rect key="frame" x="0.0" y="0.0" width="76.333333333333329" height="20"/>
                                                             <subviews>
                                                                 <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="12t-He-nOt">
@@ -69,7 +69,7 @@
                                                                 </label>
                                                             </subviews>
                                                         </stackView>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SSx-vO-o20">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Note: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SSx-vO-o20">
                                                             <rect key="frame" x="0.0" y="40" width="76.333333333333329" height="20.333333333333329"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
@@ -85,7 +85,8 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="doneButton" destination="12t-He-nOt" id="02G-ik-hzi"/>
-                                            <outlet property="taskLabel" destination="XWa-fj-6dw" id="xGh-J6-Qr6"/>
+                                            <outlet property="noteLabel" destination="SSx-vO-o20" id="yHx-gv-AIj"/>
+                                            <outlet property="taskLabel" destination="XWa-fj-6dw" id="sMl-CR-Vs4"/>
                                             <segue destination="xUb-q7-qCO" kind="show" identifier="openList" id="qul-Rx-s5m"/>
                                         </connections>
                                     </tableViewCell>

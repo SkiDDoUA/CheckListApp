@@ -9,61 +9,32 @@ import UIKit
 import CoreData
 
 final class ViewController: UIViewController {
-    
     @IBOutlet private weak var tableView: UITableView!
     var selectedRows = [IndexPath]()
-    
-    var currentList: [Task] = [] {
-        didSet {
-            print("currentList \(self.currentList.count)")
-//            self.tableView.reloadData()
-        }
-    }
+    var currentList: [Task] = []
     var taskForSegue: Task?
-    
     var isSubtasks = false
     
     weak var task: Task? {
         didSet {
-            print("SET")
-//            print("task \(self.task.count)")
             currentList = (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation!} ?? []
             isSubtasks = true
-//            tableView.reloadData()
         }
     }
     
     //MARK: - Add Sorting
     var tasksList: [Task] = [] {
         didSet {
-//            print("tasksList \(self.tasksList.count)")
             currentList = self.tasksList
             isSubtasks = false
-//            tableView.reloadData()
         }
     }
-    
-//    var subtasksList: [Task] {
-////        get {
-////            currentList = (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation!} ?? []
-////        }
-//
-//        didSet {
-//            print("RESET")
-////            currentList = (task?.subtasks?.allObjects as? [Task])?.sorted {$0.dateOfCreation! < $1.dateOfCreation!} ?? []
-////            isSubtasks = true
-////            tableView.reloadData()
-//        }
-//    }
-    
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
                 
         if !isSubtasks {
-            var predicate: NSPredicate?
-            tasksList = CoreDataService.shared.fetch(Task.self, predicate: predicate)
+            tasksList = CoreDataService.shared.fetch(Task.self, predicate: NSPredicate(format: "task == nil"))
         }
     }
     
@@ -84,18 +55,18 @@ final class ViewController: UIViewController {
                     } else {
                         self?.saveNewTask(with: name)
                     }
-                    DispatchQueue.main.async {
-                        self?.tableView.reloadData()
-                    }
+//                    self?.tableView.reloadData()
+//                    DispatchQueue.main.async {
+//                        self?.tableView.reloadData()
+//                    }
                 } else {
                     CoreDataService.shared.write {
                         list?.title = name
+//                        self?.tableView.reloadData()
                     }
+//                    self?.tableView.reloadData()
                 }
-                print("2222")
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
+//                self?.tableView.reloadData()
             }
         })
         
@@ -107,11 +78,12 @@ final class ViewController: UIViewController {
         editNoteAlert.addTextField()
         editNoteAlert.textFields?.first?.text = list?.note
         
-        editNoteAlert.addAction(.init(title: "Save", style: .default) { [weak self] _ in
+        editNoteAlert.addAction(.init(title: "Save", style: .default) { _ in
             if let note = editNoteAlert.textFields?.first?.text {
                 CoreDataService.shared.write {
                     list?.note = note
                 }
+                self.tableView.reloadData()
             }
         })
         
@@ -127,29 +99,32 @@ final class ViewController: UIViewController {
             
             tasksList.append(object)
         }
+        
+//        tableView.reloadData()
+
     }
     
     private func saveNewSubtask(with name: String) {
         CoreDataService.shared.write {
-            let object = CoreDataService.shared.create(Task.self) { object in
+            CoreDataService.shared.create(Task.self) { object in
                 object.title = name
                 object.dateOfCreation = .init()
                 object.task = self.task
             }
         }
+        
+//        tableView.reloadData()
+
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         (segue.destination as? ViewController)?.task = taskForSegue
     }
-
 }
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(currentList.count)
-        
         if currentList.count == 0 {
             tableView.setEmptyView(title: "My To Do.", message: "Add new Task.")
         }
@@ -164,6 +139,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath)
         if let cell = cell as? TaskTableViewCell {
             cell.taskLabel?.text = currentList[indexPath.row].title
+            cell.noteLabel?.text = "Note: \(currentList[indexPath.row].note ?? "")"
         }
         
         if let buttonTapped = cell.contentView.viewWithTag(1) as? UIButton {

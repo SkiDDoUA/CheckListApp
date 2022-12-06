@@ -9,6 +9,7 @@ import UIKit
 
 class TaskTableViewCell: UITableViewCell {
     @IBOutlet weak var taskLabel: UILabel!
+    @IBOutlet weak var noteLabel: UILabel!
     @IBOutlet weak var doneButton: UIButton!
     var task: Task?
     
